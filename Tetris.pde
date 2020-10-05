@@ -32,30 +32,19 @@ int y = 0;
 int[][] pieza_actual;
 int[][] pieza_siguiente;        
 int gravedad = 60;
+int gravedad_actual = 60;
 int puntaje = 0;
 int puntaje_lin = 0;
+int nivel=0;
 void setup() {
+  background(240, 48, 200);
   size(1000, 700);
   pieza_actual=crear_pieza(pieza);
   pieza_siguiente=crear_pieza(pieza);
 }
 void draw() {
   principal();
-    strokeWeight(1);
-  textSize(30);
-  fill(255,255,0);
-  text("PUNTOS ", 90, 100);
-  text("PARA GANAR ", 55, 140);
-  text(25000-puntaje,100,210);
-  fill(255);
-  text("PIEZA", 810, 100);
-  text("SIGUIENTE", 770, 140);
-  textSize(25);
-  text("SCORE", 100, 550);
-  text(puntaje,130,600);
-  text("LÍNEAS", 100, 420);
-   text(puntaje_lin,130,480);
-  text("OBJETIVO",15,720);
+  texto();
   actualizar_mapa(mapa);
   dibujarMapa(mapa);
   dibujar_pieza(pieza_siguiente, 15, 6);
@@ -67,18 +56,38 @@ void draw() {
     y=1;
     x=4;
   }
+ gravedad=gravedad_actual;
   if (frameCount %gravedad==0 && quieto(pieza_actual, mapa, x, y) == false) {
     y++;
   }
-
   perder();
   ganar();
+  gravedad=gravedad_actual;
 }
 void principal() {
    fill(0);
   rect(width/2+250, height/2-300, 200, 350);
   rect(width/2-450, height/2-300, 200, 250);
   rect(width/2-450, height/2, 200, 300);
+}
+void texto(){
+strokeWeight(1);
+  textSize(30);
+  fill(240, 48, 200);
+  text(25000-puntaje,100,210);
+  text(nivel,130,430);
+  text(puntaje_lin,130,520);
+  text(puntaje,130,610);
+  fill(255);
+  text("PUNTOS ", 90, 100);
+  text("PARA GANAR ", 55, 140);
+  text("PIEZA", 810, 100);
+  text("SIGUIENTE", 770, 140);
+  textSize(25);
+  text("NIVEL", 110, 390);
+  text("LÍNEAS", 100, 480);
+  text("SCORE", 100, 570);
+  text("OBJETIVO",15,720);
 }
 //Cuadrado central de la pieza
 void cuadrado(int x, int y) {
@@ -161,6 +170,33 @@ boolean quieto(int [][] pieza, int[][] mapa, int x, int y ) {
     return true;
   }
   return false;
+}
+int niveles(int puntaje){
+  if (puntaje <= 5000){
+    gravedad_actual=60;
+    nivel=1;
+    }
+  if (puntaje >= 5000){
+    gravedad_actual=40;
+    nivel=2;
+    }
+  if (puntaje >= 10000){
+    gravedad_actual=30;
+    nivel=3;
+    }
+  if (puntaje >= 15000){
+    gravedad_actual=20;
+    nivel=4;
+    }
+  if (puntaje >= 20000){
+    gravedad_actual=15;
+    nivel=5;
+    }
+    if (puntaje >= 23000){
+    gravedad_actual=10;
+    nivel=(6);
+    }
+    return gravedad_actual;
 }
 //rota cada cuadro de la pieza dependiendo de las cordenadas en que se encuentre
 void rotar(int [][] pieza) {
@@ -282,12 +318,11 @@ void ganar(){
    
     fill(0);
     rect(0,0,1000,700);
-    fill(255,255,0);
+    fill(240, 48, 200);
     textSize (150);
     text("GANASTE",150,250);
     textSize (50);
     text("COMPLETASTE EL RETO",220,400);
-    fill(255,0,255);
     text("LINEAS LOGRADAS : ",250,600);
     text( puntaje_lin ,750,600);
 }}
@@ -305,13 +340,13 @@ void keyPressed() {
     x++;
   } 
   if (keyCode == DOWN) {
-    gravedad = 2;
+    gravedad_actual = 2;
     puntaje= puntaje+10;
   }
 }
 
 void keyReleased() {
   if ((keyCode == DOWN) ) {
-    gravedad = 60;
+    gravedad_actual = niveles(puntaje);
   }
 }
